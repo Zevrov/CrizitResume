@@ -4,11 +4,14 @@ import './globals.css'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
-  title: 'Wolf Hopkins - Senior Developer',
-  description: 'Professional portfolio and resume showcasing full-stack development expertise',
+  title: 'Wolf Hopkins | Full Stack Software Engineer',
+  description: 'Portfolio of Wolf Hopkins, a Full Stack Software Engineer specializing in modern web technologies.',
   keywords: ['developer', 'software engineer', 'full stack', 'web development', 'portfolio'],
   authors: [{ name: 'Wolf Hopkins' }],
   openGraph: {
@@ -25,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={inter.className}>
       <body className="bg-white text-gray-900">
         <Navigation />
         <main className="min-h-screen pt-16">
