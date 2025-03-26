@@ -1,7 +1,6 @@
 'use client'
 
-import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import React, { useState } from 'react'
 
 interface FormData {
   name: string
@@ -16,41 +15,48 @@ export default function Contact() {
     message: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error' | 'rate-limited'>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmitStatus('idle')
+    setErrorMessage('')
 
     try {
-      // If Supabase is not configured, just log the form data
-      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-        console.log('Form submitted:', formData)
-        setSubmitStatus('success')
-        setFormData({ name: '', email: '', message: '' })
-        return
+      const response = await fetch('/api/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          setSubmitStatus('rate-limited')
+          setErrorMessage('Too many attempts. Please wait a minute before trying again.')
+          return
+        }
+        throw new Error(data.error || 'Failed to send message')
       }
-
-      const { error } = await supabase
-        .from('contact_messages')
-        .insert([formData])
-
-      if (error) throw error
 
       setSubmitStatus('success')
       setFormData({ name: '', email: '', message: '' })
     } catch (error) {
-      console.error('Error submitting form:', error)
       setSubmitStatus('error')
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to send message. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
   }
 
   return (
@@ -202,18 +208,20 @@ export default function Contact() {
               </div>
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || submitStatus === 'rate-limited'}
                 className={`w-full bg-primary text-white px-6 py-3 rounded-lg transition-colors ${
-                  isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/90'
+                  (isSubmitting || submitStatus === 'rate-limited') ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/90'
                 }`}
               >
-                {isSubmitting ? 'Sending...' : 'Send Message'}
+                {isSubmitting ? 'Sending...' : submitStatus === 'rate-limited' ? 'Please Wait...' : 'Send Message'}
               </button>
               {submitStatus === 'success' && (
                 <p className="text-green-400 text-center">Message sent successfully!</p>
               )}
-              {submitStatus === 'error' && (
-                <p className="text-red-400 text-center">Failed to send message. Please try again.</p>
+              {(submitStatus === 'error' || submitStatus === 'rate-limited') && (
+                <p className={`text-center ${submitStatus === 'rate-limited' ? 'text-yellow-400' : 'text-red-400'}`}>
+                  {errorMessage}
+                </p>
               )}
             </form>
           </div>
