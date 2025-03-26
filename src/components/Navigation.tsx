@@ -17,6 +17,9 @@ export default function Navigation() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
+            <Link href="#about" className="text-white hover:text-primary transition-colors">
+              About
+            </Link>
             <Link href="#experience" className="text-white hover:text-primary transition-colors">
               Experience
             </Link>
@@ -69,6 +72,13 @@ export default function Navigation() {
           } overflow-hidden`}
         >
           <div className="px-2 pt-2 pb-3 space-y-1 bg-[#0A192F] shadow-lg rounded-lg mt-2">
+            <Link
+              href="#about"
+              className="block px-3 py-2 text-white hover:text-primary transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              About
+            </Link>
             <Link
               href="#experience"
               className="block px-3 py-2 text-white hover:text-primary transition-colors"
