@@ -15,7 +15,7 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="relative py-20 bg-deep-blue">
+      <section id="about" className="relative py-20 bg-[#0A192F]">
         <div className="absolute inset-0 opacity-5">
           <CorporatePattern pattern="dots" color="white" />
         </div>
@@ -23,7 +23,7 @@ export default function Home() {
       </section>
 
       {/* Experience Section */}
-      <section id="experience" className="relative py-20 bg-deep-blue">
+      <section id="experience" className="relative py-20 bg-[#0A192F]">
         <div className="absolute inset-0 opacity-5">
           <CorporatePattern pattern="circuit" color="white" />
         </div>
@@ -31,7 +31,7 @@ export default function Home() {
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="relative py-20 bg-deep-blue">
+      <section id="skills" className="relative py-20 bg-[#0A192F]">
         <div className="absolute inset-0 opacity-5">
           <CorporatePattern pattern="grid" color="white" />
         </div>
@@ -39,7 +39,7 @@ export default function Home() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="relative py-20 bg-deep-blue">
+      <section id="projects" className="relative py-20 bg-[#0A192F]">
         <div className="absolute inset-0 opacity-5">
           <CorporatePattern pattern="squares" color="white" />
         </div>
